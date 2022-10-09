@@ -6,3 +6,6 @@ Pillow
 # packages for environment variable
 python-decouple
 dj-database-url
+
+# Project specific requirements
+djangorestframework
