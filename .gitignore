@@ -1,5 +1,7 @@
 # My workspace
 
+staticfiles/*
+
 # vscode settings
 .vscode/*
 
