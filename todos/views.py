@@ -8,6 +8,6 @@ class ToDoList(generics.ListCreateAPIView):
     serializer_class = ToDoSerializer
 
 
-class ToDoDetail(generics.RetrieveUpdateAPIView):
+class ToDoDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = ToDo.objects.all()
     serializer_class = ToDoSerializer
