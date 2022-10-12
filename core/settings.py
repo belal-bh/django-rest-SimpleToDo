@@ -141,7 +141,20 @@ STATICFILES_DIRS = [
     BASE_DIR.joinpath("staticfiles"),
 ]
 
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+# STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# STATIC_ROOT = BASE_DIR.parent.joinpath("static_cdn", "static")
+STATIC_ROOT = BASE_DIR.joinpath("static_cdn", "static")
+# STATIC_ROOT = BASE_DIR.joinpath("static")
+
+
+MEDIA_URL = '/media/'
+# MEDIA_ROOT = BASE_DIR.parent.joinpath("static_cdn", "media")
+MEDIA_ROOT = BASE_DIR.joinpath("static_cdn", "media")
+# MEDIA_ROOT = BASE_DIR.joinpath("media")
+
+# PROTECTED_ROOT = BASE_DIR.parent.joinpath("static_cdn", "protected_media")
+PROTECTED_ROOT = BASE_DIR.joinpath("static_cdn", "protected_media")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

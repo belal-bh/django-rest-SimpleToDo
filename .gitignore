@@ -2,6 +2,10 @@
 
 staticfiles/*
 
+# fixing collectstatic problem by removing these folder
+static_cdn/static_root/
+static_cdn/static/
+
 # vscode settings
 .vscode/*
 

@@ -9,3 +9,7 @@ dj-database-url
 
 # Project specific requirements
 djangorestframework
+
+# For herokuapp
+gunicorn
+whitenoise
