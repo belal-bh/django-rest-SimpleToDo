@@ -15,7 +15,6 @@ def get_or_create_user(user_name):
 
 def get_user_or_none(user_name):
     username = user_name.strip()
-    email = generate_email_from_username(username)
     try:
         user = User.objects.get(username=username)
     except:

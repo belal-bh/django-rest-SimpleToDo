@@ -19,9 +19,14 @@ class ToDoViewset(viewsets.ModelViewSet):
             return ToDo.objects.none()
 
         # get the user
-        user, created = get_or_create_user(username)
+        # user, created = get_or_create_user(username)
+        user = get_user_or_none(username)
+        if not user:
+            user, created = get_or_create_user(username)
+        print(user)
 
-        return user.todos.all()
+        # return user.todos.all()
+        return ToDo.objects.all()
 
 
 class ToDoList(generics.ListCreateAPIView):
