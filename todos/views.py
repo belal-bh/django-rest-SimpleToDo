@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from rest_framework import generics, viewsets
+from rest_framework import viewsets
 
 from todos.models import ToDo
 from todos.serializers import ToDoSerializer
@@ -11,29 +11,38 @@ User = get_user_model()
 class ToDoViewset(viewsets.ModelViewSet):
     serializer_class = ToDoSerializer
 
-    def get_queryset(self):
-        username = self.request.META.get('User-Name', None)
+    def _get_user_or_none(self):
+        username = self.request.headers.get('userid', None)
+        return get_user_or_none(username)
 
+    def get_queryset(self):
+        username = self.request.headers.get('userid', None)
         # handle bad header request
         if not username:
             return ToDo.objects.none()
 
         # get the user
-        # user, created = get_or_create_user(username)
-        user = get_user_or_none(username)
+        user = self._get_user_or_none()
         if not user:
             user, created = get_or_create_user(username)
         print(user)
 
-        # return user.todos.all()
-        return ToDo.objects.all()
+        return user.todos.all()
+    
+    def list(self, request):
+        return super().list(request)
 
+    # def create(self, request):
+    #     pass
 
-class ToDoList(generics.ListCreateAPIView):
-    queryset = ToDo.objects.all()
-    serializer_class = ToDoSerializer
+    # def retrieve(self, request, pk=None):
+    #     pass
 
+    # def update(self, request, pk=None):
+    #     pass
 
-class ToDoDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = ToDo.objects.all()
-    serializer_class = ToDoSerializer
+    # def partial_update(self, request, pk=None):
+    #     pass
+
+    # def destroy(self, request, pk=None):
+    #     pass
