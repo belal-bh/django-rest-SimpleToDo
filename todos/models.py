@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 class ToDo(models.Model):
-    user =  models.ForeignKey(User, default=1, on_delete=models.CASCADE)
+    user =  models.ForeignKey(User, default=1, on_delete=models.CASCADE, related_name='todos')
     title = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
     is_completed = models.BooleanField(default=False)
