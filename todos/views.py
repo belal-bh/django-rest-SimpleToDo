@@ -1,12 +1,13 @@
 from django.contrib.auth import get_user_model
 from rest_framework import viewsets
+from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from todos.models import ToDo
 from todos.serializers import ToDoSerializer, UserSerializer
 
-from todos.utils import get_or_create_user, get_user_or_none, get_normalized_username, generate_email_from_username
+from todos.utils import get_user_or_none, get_normalized_username, generate_email_from_username
 
 User = get_user_model()
 
@@ -15,16 +16,12 @@ def login_or_register(request):
     username = request.data.get('username', '')
     username = get_normalized_username(username)
     if not username:
-        return Response({"message": "Invalid"}, status=400)
+        return Response({"message": "Invalid"}, status=status.HTTP_400_BAD_REQUEST)
     
     email = generate_email_from_username(username)
-    user = None
 
-    try:
-        user = User.objects.get(username=username)
-    except:
-        pass
-
+    user = User.objects.filter(username=username).first()
+    
     if not user:
         user_serialiser = UserSerializer(data={'username': username, 'email': email})
     else:
@@ -32,34 +29,34 @@ def login_or_register(request):
 
     if not user and user_serialiser.is_valid():
         user = user_serialiser.save()
-        return Response(user_serialiser.data, status=200)
+        return Response(user_serialiser.data, status=status.HTTP_201_CREATED)
 
     if user:
-        return Response(user_serialiser.data, status=200)
+        return Response(user_serialiser.data, status=status.HTTP_200_OK)
 
-    return Response({"message": "Invalid"}, status=400)
+    return Response({"message": "Invalid"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
 class ToDoViewset(viewsets.ModelViewSet):
     serializer_class = ToDoSerializer
 
-    def _get_user_or_none(self):
-        username = self.request.headers.get('userid', None)
-        return get_user_or_none(username)
-
     def get_queryset(self):
-        username = self.request.headers.get('userid', None)
+        userid = self.request.headers.get('userid', None)
+        try:
+            userid = int(userid)
+        except:
+            pass
+
+        # print(type(userid), isinstance(userid, int))
         # handle bad header request
-        if not username:
+        if not isinstance(userid, int):
             return ToDo.objects.none()
 
         # get the user
-        user = self._get_user_or_none()
+        user = User.objects.filter(id=userid).first()
         if not user:
-            user, created = get_or_create_user(username)
-        print(user)
-
+            return ToDo.objects.none()
         return user.todos.all()
     
     def list(self, request):

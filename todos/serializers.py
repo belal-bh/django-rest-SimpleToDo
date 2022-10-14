@@ -1,14 +1,12 @@
-from dataclasses import field
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from todos.models import ToDo
-from todos.utils import get_or_create_user, get_user_or_none
 
 User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(max_length=40, min_length=3, allow_blank=False, trim_whitespace=True)
-    
+    username = serializers.CharField(max_length=40, allow_blank=False, trim_whitespace=True)
+
     class Meta:
         model = User
         fields = ['id', 'username', 'email']
@@ -27,13 +25,17 @@ class ToDoSerializer(serializers.ModelSerializer):
         request = self.context.get('request', None)
         if not request:
             return None
-        username = request.headers.get('Userid', None)
-        return username
+        userid = request.headers.get('Userid', None)
+        try:
+            userid = int(userid)
+        except:
+            return None
+        return userid
 
     def create(self, validated_data):
-        username = self._get_userid()
-        user, created = get_or_create_user(username)
+        userid = self._get_userid()
+        user = User.objects.filter(id=userid).first()
         if not user:
-            raise serializers.ValidationError("Invalid User credentials")
+            raise serializers.ValidationError({'name': "Invalid User credentials."})
         validated_data['user'] = user
         return super().create(validated_data)
