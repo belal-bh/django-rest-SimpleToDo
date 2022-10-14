@@ -29,7 +29,7 @@ def login_or_register(request):
 
     if not user and user_serialiser.is_valid():
         user = user_serialiser.save()
-        return Response(user_serialiser.data, status=status.HTTP_201_CREATED)
+        return Response(user_serialiser.data, status=status.HTTP_200_OK)
 
     if user:
         return Response(user_serialiser.data, status=status.HTTP_200_OK)
