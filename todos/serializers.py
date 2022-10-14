@@ -1,9 +1,22 @@
+from dataclasses import field
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from todos.models import ToDo
 from todos.utils import get_or_create_user, get_user_or_none
 
 User = get_user_model()
+
+class UserSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(max_length=40, min_length=3, allow_blank=False, trim_whitespace=True)
+    
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email']
+    
+    def create(self, validated_data):
+        return super().create(validated_data)
+
+
 
 class ToDoSerializer(serializers.ModelSerializer):
     class Meta:

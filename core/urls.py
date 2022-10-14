@@ -4,7 +4,7 @@ from django.urls import include, path
 from django.conf.urls.static import static
 
 from rest_framework import routers
-from todos.views import ToDoViewset
+from todos.views import ToDoViewset, login_or_register
 
 router = routers.SimpleRouter()
 router.register(r'api/tasks', ToDoViewset, basename='todo')
@@ -12,6 +12,7 @@ router.register(r'api/tasks', ToDoViewset, basename='todo')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('api/login/', login_or_register, name='login_or_register'),
 ] + router.urls
 
 
